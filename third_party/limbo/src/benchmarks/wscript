@@ -1,0 +1,113 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#| Copyright Inria May 2015
+#| This project has received funding from the European Research Council (ERC) under
+#| the European Union's Horizon 2020 research and innovation programme (grant
+#| agreement No 637972) - see http://www.resibots.eu
+#|
+#| Contributor(s):
+#|   - Jean-Baptiste Mouret (jean-baptiste.mouret@inria.fr)
+#|   - Antoine Cully (antoinecully@gmail.com)
+#|   - Konstantinos Chatzilygeroudis (konstantinos.chatzilygeroudis@inria.fr)
+#|   - Federico Allocati (fede.allocati@gmail.com)
+#|   - Vaios Papaspyros (b.papaspyros@gmail.com)
+#|   - Roberto Rama (bertoski@gmail.com)
+#|
+#| This software is a computer library whose purpose is to optimize continuous,
+#| black-box functions. It mainly implements Gaussian processes and Bayesian
+#| optimization.
+#| Main repository: http://github.com/resibots/limbo
+#| Documentation: http://www.resibots.eu/limbo
+#|
+#| This software is governed by the CeCILL-C license under French law and
+#| abiding by the rules of distribution of free software.  You can  use,
+#| modify and/ or redistribute the software under the terms of the CeCILL-C
+#| license as circulated by CEA, CNRS and INRIA at the following URL
+#| "http://www.cecill.info".
+#|
+#| As a counterpart to the access to the source code and  rights to copy,
+#| modify and redistribute granted by the license, users are provided only
+#| with a limited warranty  and the software's author,  the holder of the
+#| economic rights,  and the successive licensors  have only  limited
+#| liability.
+#|
+#| In this respect, the user's attention is drawn to the risks associated
+#| with loading,  using,  modifying and/or developing or reproducing the
+#| software by the user in light of its specific status of free software,
+#| that may mean  that it is complicated to manipulate,  and  that  also
+#| therefore means  that it is reserved for developers  and  experienced
+#| professionals having in-depth computer knowledge. Users are therefore
+#| encouraged to load and test the software's suitability as regards their
+#| requirements in conditions enabling the security of their systems and/or
+#| data to be ensured and,  more generally, to use and operate it in the
+#| same conditions as regards security.
+#|
+#| The fact that you are presently reading this means that you have had
+#| knowledge of the CeCILL-C license and that you accept its terms.
+#|
+import limbo
+
+def options(opt):
+    opt.add_option('--enable_bayesopt', action='store_true', help='enable the comparison with bayesopt in the benchmarks ', dest='enable_bayesopt')
+    opt.add_option('--bayesopt_path', type='string', help='path to Bayesopt', dest='bayesopt_path')
+    opt.add_option('--enable_libgp', action='store_true', help='enable the comparison with libgp in the benchmarks ', dest='enable_libgp')
+    opt.add_option('--libgp_path', type='string', help='path to libgp', dest='libgp_path')
+
+
+def configure(conf):
+    if conf.options.enable_bayesopt:
+        if conf.options.bayesopt_path:
+            conf.env.LIBPATH_BAYESOPT = [conf.options.bayesopt_path+'/lib']
+            conf.env.INCLUDES_BAYESOPT = [conf.options.bayesopt_path+'/include/']
+        else:
+            conf.env.LIBPATH_BAYESOPT = ['/usr/local/lib']
+            conf.env.INCLUDES_BAYESOPT = ['/usr/local/include/']
+        conf.env.LIB_BAYESOPT = ['bayesopt', 'nlopt']
+        conf.env.DEFINES_BAYESOPT = ['USE_BAYESOPT']
+        conf.get_env()['USE_BAYESOPT'] = True
+
+    if conf.options.enable_libgp:
+        if conf.options.libgp_path:
+            conf.env.LIBPATH_LIBGP = [conf.options.libgp_path+'/lib']
+            conf.env.INCLUDES_LIBGP = [conf.options.libgp_path+'/include/']
+        else:
+            conf.env.LIBPATH_LIBGP = ['/usr/local/lib']
+            conf.env.INCLUDES_LIBGP = ['/usr/local/include/']
+        conf.env.STLIB_LIBGP = ['gp']
+        conf.env.DEFINES_LIBGP = ['USE_LIBGP']
+        conf.get_env()['USE_LIBGP'] = True
+
+
+def build_bo_benchmarks(bld):
+
+    if bld.env.DEFINES_NLOPT == ['USE_NLOPT']:
+        limbo.create_variants(bld,
+                      source = 'limbo/bench.cpp',
+                      uselib_local = 'limbo',
+                      uselib = 'BOOST EIGEN TBB NLOPT LIBCMAES MKL_TBB',
+                      variants = ['BAYESOPT_DEF',
+                                  'BAYESOPT_DEF_HPOPT',
+                                  'LIMBO_DEF',
+                                  'LIMBO_DEF_HPOPT',
+                                  'OPT_CMAES',
+                                  'OPT_DIRECT',
+                                  'ACQ_UCB',
+                                  'ACQ_EI'
+                                  ])
+
+        #Quick and dirty way to add Bayesopt
+
+        if bld.get_env()['USE_BAYESOPT'] == True:
+            bld.program(features='cxx',
+                        source='bayesopt/simple.cpp',
+                        includes='.',
+                        target='bayesopt/bayesopt_default',
+                        uselib='BOOST EIGEN TBB NLOPT BAYESOPT LIMBO',
+                        use='')
+
+            bld.program(features='cxx',
+                        source='bayesopt/hp_opt.cpp',
+                        includes='.',
+                        target='bayesopt/bayesopt_hp_opt',
+                        uselib='BOOST EIGEN TBB NLOPT BAYESOPT LIMBO',
+                        use='')
