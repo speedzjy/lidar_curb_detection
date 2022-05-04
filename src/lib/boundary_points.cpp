@@ -269,7 +269,7 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
   vector<double> y(incloud->points.size());
   int nData = x.size();
 
-  if (nData == 0)
+  if (nData == 0 || nData == 1 || nData == 2)
     return;
 
   for (int i = 0; i < x.size(); i++) {
@@ -304,8 +304,8 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
   int max_cnt = 0;
   cv::Mat best_model(3, 1, CV_64FC1);
 
-  AINFO << "cd for" << endl;
-  AINFO << "nData" << nData << endl;
+  // AINFO << "nData: " << nData << endl;
+  // AINFO << "cd for 1" << endl;
 
   for (int i = 0; i < N; i++) {
     // random sampling - 3 point
@@ -323,7 +323,7 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
       k[2] = floor((rand() % nData + 1)) + 1;
     } while (k[2] == k[0] || k[2] == k[1] || k[2] < 0);
 
-    //        printf("random sample : %d %d %d\n", k[0], k[1], k[2]) ;
+    // printf("random sample : %d %d %d\n", k[0], k[1], k[2]);
 
     // model estimation
     cv::Mat AA(3, 3, CV_64FC1);
@@ -362,6 +362,7 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
     }
   }
 
+  AINFO << "begin LS fitting" << endl;
   //------------------------------------------------------------------- optional
   //LS fitting
   cv::Mat residual = cv::abs(A * best_model - B);
@@ -373,6 +374,9 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
       vec_index.push_back(i);
     }
   }
+  AINFO << "done LS fitting" << endl;
+
+  if (vec_index.size() == 0) return;
 
   cv::Mat A2(vec_index.size(), 3, CV_64FC1); //存储所有内点
   cv::Mat B2(vec_index.size(), 1, CV_64FC1);
@@ -386,12 +390,15 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
   }
 
   cv::Mat A2_pinv(3, vec_index.size(), CV_64FC1);
+
   invert(A2, A2_pinv, cv::DECOMP_SVD);
+  AINFO << A2_pinv << endl;
 
   cv::Mat X = A2_pinv * B2; //利用所有内点再次进行拟合得到优化后的模型系数
 
   cv::Mat residual_opt = cv::abs(A * X - B);
   std::vector<int> vec_index_opt; //存储模型内点索引
+
   for (int i = 0; i < nData; i++) {
     double data = residual_opt.at<double>(i, 0);
     if (data < T) //如果残差小于阈值则作为内点
@@ -399,6 +406,7 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
       outcloud->points.push_back(incloud->points[i]);
     }
   }
+
   AINFO << "curb line model coefficient is " << X.at<double>(0) << " "
         << X.at<double>(1) << " " << X.at<double>(2) << endl;
 }
@@ -416,6 +424,8 @@ void BoundaryPoints::process(PointCloudType::Ptr obstacleCloud,
   pcl::PointIndices::Ptr rightIndices(new pcl::PointIndices);
   pcl::PointIndices::Ptr cloudIndices(new pcl::PointIndices);
 
+  AINFO << "cd gauss process" << endl;
+
   CloudPtrList clusterPtrLR(2);
   for (int i = 0; i < clusterPtrLR.size(); ++i) {
     clusterPtrLR[i] = boost::make_shared<PointCloudType>();
@@ -430,6 +440,7 @@ void BoundaryPoints::process(PointCloudType::Ptr obstacleCloud,
     }
   }
 
+  AINFO << "cd gauss process RoadSegmentation" << endl;
   RoadSegmentation mycluster(obstacleCloudFiltered);
   mycluster.process(_cloud, clusterPtrLR);
   AINFO << "left candidate points is" << clusterPtrLR[0]->points.size() << endl;

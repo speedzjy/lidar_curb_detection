@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-03 15:47:03
+ * @LastEditTime: 2022-05-04 17:11:06
  */
 
 #include <lidar_curb_detection/road_segmentation.hpp>
@@ -136,11 +136,15 @@ void RoadSegmentation::computeSegmentAngle() {
          return left.first > right.first;
        });
 
+  AINFO << "compute front segmentation angle" << endl;
+  AINFO << "_distance_vec_front[0].first:" << _distance_vec_front[0].first << endl;
+  AINFO << "_distance_vec_front[0].second:" << _distance_vec_front[0].second << endl;
   //计算前方segmentation angle
   if (_distance_vec_front[0].first == 1.0) {
     std::vector<int> max_distance_angle_left;
     std::vector<int> max_distance_angle_right;
 
+    AINFO << "compute front for" << endl;
     for (int i = 0; i < _distance_vec_front.size(); ++i) {
       if (_distance_vec_front[i].first == 1.0 &&
           _distance_vec_front[i].second < 90) {
@@ -167,9 +171,13 @@ void RoadSegmentation::computeSegmentAngle() {
   } else {
     _segmentAngle[0] = _distance_vec_front[0].second;
   }
+
+  AINFO << "compute rear segmentation angle" << endl;
   //计算后方segmentation angle
   if (_distance_vec_rear[0].first == 1.0) {
     std::vector<int> max_distance_angle;
+
+    AINFO << "compute rear for" << endl;
     for (int i = 0; i < _distance_vec_rear.size(); ++i) {
       if (_distance_vec_rear[i].first == 1) {
         max_distance_angle.push_back(_distance_vec_rear[i].second);
@@ -186,9 +194,14 @@ void RoadSegmentation::computeSegmentAngle() {
 
 void RoadSegmentation::process(PointCloudType::Ptr incloud,
                                CloudPtrList outcloud) {
+
+  AINFO << "cd generatePolarGrid()" << endl;
   this->generatePolarGrid();
+  AINFO << "cd computeDistanceVec()" << endl;
   this->computeDistanceVec();
+  AINFO << "cd computeSegmentAngle()" << endl;
   this->computeSegmentAngle();
+  AINFO << "done computeSegmentAngle()" << endl;
 
   for (int i = 0; i < incloud->points.size(); ++i) {
     PointType point(incloud->points[i]);

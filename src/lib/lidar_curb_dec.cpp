@@ -77,8 +77,9 @@ void LidarCurbDectection::pointCloudCallback(
     AINFO << "feature points is " << featurePoints->points.size() << endl;
 
     //高斯过程提取
+    AINFO << "cd gauss" << endl;
     BoundaryPoints refinePoints(*featurePoints);
-    // refinePoints.process(ground_points_no, boundary_points);
+    refinePoints.process(ground_points_no, boundary_points);
 
     *complete_points = *completeCloud;
   }
