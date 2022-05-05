@@ -1,8 +1,8 @@
 ﻿/*
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
- * @LastEditors: speedzjy
- * @LastEditTime: 2022-05-05 11:38:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-05-05 15:07:02
  */
 
 #include "lidar_curb_detection/ground_segment.hpp"
@@ -56,7 +56,6 @@ void GroundSegmentation::extractGround(PointCloudType::Ptr outCloud,
   extract.setInputCloud(inputCloud);
   extract.setIndices(Indices);
   extract.filter(*outCloud);
-  AINFO << outCloud->size() << endl;
 }
 
 void GroundSegmentation::planeSeg(PointCloudType::Ptr cloud,
@@ -74,9 +73,8 @@ void GroundSegmentation::planeSeg(PointCloudType::Ptr cloud,
 
 void GroundSegmentation::groundfilter(PointCloudType::Ptr groundpoints,
                                       PointCloudType::Ptr non_groundpoints) {
-  AINFO << _cloudptrlist.size() - 2 << endl;
 
-  for (int i = 0; i < 1; ++i) {
+  for (int i = 0; i < _cloudptrlist.size() - 2; ++i) {
 
     PointCloudType::Ptr ground_i(new PointCloudType);
     PointCloudType::Ptr ground_no_i(new PointCloudType);

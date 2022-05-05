@@ -58,7 +58,7 @@ void LidarCurbDectection::pointCloudCallback(
   CloudMapper mapper_laserID;
   PointCloudType::Ptr completeCloudMapper(new PointCloudType);
   mapper_laserID.processByOri(completeCloud, completeCloudMapper);
-  AINFO << "raw points number is " << completeCloudMapper->points.size()
+  AINFO << "raw points number: " << completeCloudMapper->points.size()
         << endl;
 
   //地面提取
@@ -66,9 +66,7 @@ void LidarCurbDectection::pointCloudCallback(
   PointCloudType::Ptr ground_points_no(new PointCloudType); //非地面点
 
   GroundSegmentation ground(completeCloudMapper);
-
   ground.groundfilter(ground_points, ground_points_no);
-  AINFO << "after ground filter" << endl;
 
   //根据之前计算的Intensity对地面点云进行mapper
   CloudMapper mapper2;
@@ -76,7 +74,7 @@ void LidarCurbDectection::pointCloudCallback(
   PointCloudType::Ptr ground_points_mapper(new PointCloudType);
   mapper2.processByIntensity(ground_points, ground_points_mapper,
                              scanIDindices);
-  AINFO << "ground points mapper is " << ground_points_mapper->points.size()
+  AINFO << "ground points mapper number: " << ground_points_mapper->points.size()
         << endl;
 
   //特征点提取
@@ -84,7 +82,7 @@ void LidarCurbDectection::pointCloudCallback(
       new pcl::PointCloud<pcl::PointXYZI>);
   FeaturePoints curbExtract(ground_points_mapper, scanIDindices);
   curbExtract.extractFeatures(featurePoints);
-  AINFO << "feature points is " << featurePoints->points.size() << endl;
+  AINFO << "feature points number: " << featurePoints->points.size() << endl;
 
   //高斯过程提取
   BoundaryPoints refinePoints(*featurePoints);

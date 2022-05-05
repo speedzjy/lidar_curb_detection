@@ -440,7 +440,6 @@ void BoundaryPoints::process(PointCloudType::Ptr obstacleCloud,
     }
   }
 
-  AINFO << "cd gauss process RoadSegmentation" << endl;
   RoadSegmentation mycluster(obstacleCloudFiltered);
   mycluster.process(_cloud, clusterPtrLR);
   AINFO << "left candidate points is" << clusterPtrLR[0]->points.size() << endl;

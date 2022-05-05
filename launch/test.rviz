@@ -68,7 +68,7 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 0
+      Max Intensity: 206
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: CompleteCloud
@@ -76,7 +76,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.029999999329447746
       Style: Flat Squares
       Topic: /complete_cloud
       Unreliable: false
@@ -98,9 +98,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 239; 41; 41
-      Max Intensity: 14
+      Max Intensity: 17
       Min Color: 239; 41; 41
-      Min Intensity: 2
+      Min Intensity: 1
       Name: curb_cloud_left
       Position Transformer: XYZ
       Queue Size: 10
@@ -128,9 +128,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 52; 101; 164
-      Max Intensity: 20
+      Max Intensity: 9
       Min Color: 52; 101; 164
-      Min Intensity: 1
+      Min Intensity: 0
       Name: curb_cloud_right
       Position Transformer: XYZ
       Queue Size: 10
@@ -155,10 +155,10 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 31
+      Max Intensity: 1
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: ground_cloud
@@ -172,7 +172,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -188,7 +188,7 @@ Visualization Manager:
       Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 31
+      Max Intensity: 1
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: no_ground_cloud
@@ -207,7 +207,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: velo_link
+    Fixed Frame: velodyne
     Frame Rate: 30
   Name: root
   Tools:
@@ -231,25 +231,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 42.665916442871094
+      Distance: 58.657562255859375
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 7.061629295349121
-        Y: -2.639716386795044
-        Z: -3.047437906265259
+        X: -3.2922983169555664
+        Y: 1.7829091548919678
+        Z: -2.9512574672698975
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.2697967290878296
+      Pitch: 0.7947981953620911
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.168581962585449
+      Yaw: 4.77677059173584
     Saved: ~
 Window Geometry:
   Displays:
