@@ -20,6 +20,8 @@ LidarCurbDectection::LidarCurbDectection()
       nh_.advertise<sensor_msgs::PointCloud2>("/complete_cloud", 10);
   pubGroundCloud_ =
       nh_.advertise<sensor_msgs::PointCloud2>("/ground_cloud", 10);
+  pubNoGroundCloud_ =
+      nh_.advertise<sensor_msgs::PointCloud2>("/no_ground_cloud", 10);
   pubCurbCloudLeft_ =
       nh_.advertise<sensor_msgs::PointCloud2>("/curb_cloud_left", 10);
   pubCurbCloudRight_ =
@@ -85,7 +87,6 @@ void LidarCurbDectection::pointCloudCallback(
   AINFO << "feature points is " << featurePoints->points.size() << endl;
 
   //高斯过程提取
-  AINFO << "cd gauss" << endl;
   BoundaryPoints refinePoints(*featurePoints);
   refinePoints.process(ground_points_no, boundary_points);
 
@@ -93,14 +94,27 @@ void LidarCurbDectection::pointCloudCallback(
 
   sensor_msgs::PointCloud2 tmp_rosCloud;
 
+  //  完整点云
   pcl::toROSMsg(*complete_points, tmp_rosCloud);
   tmp_rosCloud.header.frame_id = "velodyne";
   pubCompleteCloud_.publish(tmp_rosCloud);
 
+  // 地面点
+  pcl::toROSMsg(*ground_points, tmp_rosCloud);
+  tmp_rosCloud.header.frame_id = "velodyne";
+  pubGroundCloud_.publish(tmp_rosCloud);
+
+  // 非地面点
+  pcl::toROSMsg(*ground_points_no, tmp_rosCloud);
+  tmp_rosCloud.header.frame_id = "velodyne";
+  pubNoGroundCloud_.publish(tmp_rosCloud);
+
+  // 左边缘点
   pcl::toROSMsg(*(boundary_points[0]), tmp_rosCloud);
   tmp_rosCloud.header.frame_id = "velodyne";
   pubCurbCloudLeft_.publish(tmp_rosCloud);
-
+  
+  // 右边缘点
   pcl::toROSMsg(*(boundary_points[1]), tmp_rosCloud);
   tmp_rosCloud.header.frame_id = "velodyne";
   pubCurbCloudRight_.publish(tmp_rosCloud);

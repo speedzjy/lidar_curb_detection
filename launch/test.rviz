@@ -26,7 +26,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: CompleteCloud
+    SyncSource: curb_cloud_left
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -64,10 +64,10 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 164
+      Max Intensity: 250
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: CompleteCloud
@@ -81,7 +81,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -97,9 +97,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 239; 41; 41
-      Max Intensity: -999999
+      Max Intensity: 2
       Min Color: 239; 41; 41
-      Min Intensity: 999999
+      Min Intensity: 2
       Name: curb_cloud_left
       Position Transformer: XYZ
       Queue Size: 10
@@ -127,9 +127,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 52; 101; 164
-      Max Intensity: 2
+      Max Intensity: -999999
       Min Color: 52; 101; 164
-      Min Intensity: 1
+      Min Intensity: 999999
       Name: curb_cloud_right
       Position Transformer: XYZ
       Queue Size: 10
@@ -142,6 +142,66 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: false
       Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 1
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: ground_cloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /ground_cloud
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 1
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: no_ground_cloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /no_ground_cloud
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -170,7 +230,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 22.823198318481445
+      Distance: 24.20978546142578
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -185,10 +245,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8797969818115234
+      Pitch: 1.0297969579696655
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.538570880889893
+      Yaw: 4.268569469451904
     Saved: ~
 Window Geometry:
   Displays:
