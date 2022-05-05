@@ -94,10 +94,9 @@ void CloudMapper::processByIntensity(PointCloudType::Ptr incloud,
 }
 void CloudMapper::processByOri(PointCloudType::Ptr incloud,
                                PointCloudType::Ptr outcloud) {
-  size_t cloudSize = incloud->points.size();
   int scanID = 0;
   PointType point;
-  for (int i = 1; i < cloudSize; i++) {
+  for (size_t i = 1; i < incloud->points.size(); i++) {
     // skip NaN and INF valued points
     if (!pcl_isfinite(incloud->points[i].x) ||
         !pcl_isfinite(incloud->points[i].y) ||

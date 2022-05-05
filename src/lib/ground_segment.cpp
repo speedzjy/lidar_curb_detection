@@ -2,13 +2,13 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-05 15:07:02
+ * @LastEditTime: 2022-05-05 16:50:47
  */
 
 #include "lidar_curb_detection/ground_segment.hpp"
 
 namespace CurbDectection {
-  
+
 GroundSegmentation::GroundSegmentation(PointCloudType::Ptr incloud) {
   _threshold = groundSegmentationMsg_segThres;
   _cloudptrlist.resize(6);
