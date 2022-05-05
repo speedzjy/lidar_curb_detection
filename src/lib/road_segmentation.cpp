@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-04 17:11:06
+ * @LastEditTime: 2022-05-05 10:43:32
  */
 
 #include <lidar_curb_detection/road_segmentation.hpp>
@@ -41,11 +41,11 @@ void RoadSegmentation::computeDistanceVec() {
 #pragma omp parallel for schedule(runtime)
   for (int i = 0; i < _grid_map_vec.size(); ++i) {
     std::sort(_grid_map_vec[i].begin(), _grid_map_vec[i].end(),
-         [](PointType &left, PointType &right) {
-           float d1 = pow(left.x, 2) + pow(left.y, 2);
-           float d2 = pow(right.x, 2) + pow(right.y, 2);
-           return (d1 < d2);
-         });
+              [](PointType &left, PointType &right) {
+                float d1 = pow(left.x, 2) + pow(left.y, 2);
+                float d2 = pow(right.x, 2) + pow(right.y, 2);
+                return (d1 < d2);
+              });
 
     if (_grid_map_vec[i].size() > 0) {
       double distance_min = pow(
@@ -127,24 +127,20 @@ void RoadSegmentation::computeDistanceVec() {
 
 void RoadSegmentation::computeSegmentAngle() {
   std::sort(_distance_vec_front.begin(), _distance_vec_front.end(),
-       [](std::pair<float, int> &left, std::pair<float, int> &right) {
-         return left.first > right.first;
-       });
+            [](std::pair<float, int> &left, std::pair<float, int> &right) {
+              return left.first > right.first;
+            });
 
   std::sort(_distance_vec_rear.begin(), _distance_vec_rear.end(),
-       [](std::pair<float, int> &left, std::pair<float, int> &right) {
-         return left.first > right.first;
-       });
+            [](std::pair<float, int> &left, std::pair<float, int> &right) {
+              return left.first > right.first;
+            });
 
-  AINFO << "compute front segmentation angle" << endl;
-  AINFO << "_distance_vec_front[0].first:" << _distance_vec_front[0].first << endl;
-  AINFO << "_distance_vec_front[0].second:" << _distance_vec_front[0].second << endl;
   //计算前方segmentation angle
   if (_distance_vec_front[0].first == 1.0) {
     std::vector<int> max_distance_angle_left;
     std::vector<int> max_distance_angle_right;
 
-    AINFO << "compute front for" << endl;
     for (int i = 0; i < _distance_vec_front.size(); ++i) {
       if (_distance_vec_front[i].first == 1.0 &&
           _distance_vec_front[i].second < 90) {
@@ -157,34 +153,42 @@ void RoadSegmentation::computeSegmentAngle() {
     }
 
     std::sort(max_distance_angle_left.begin(), max_distance_angle_left.end(),
-         [](int &left, int &right) { return left > right; });
+              [](int &left, int &right) { return left > right; });
 
     std::sort(max_distance_angle_right.begin(), max_distance_angle_right.end(),
-         [](int &left, int &right) { return left > right; });
+              [](int &left, int &right) { return left > right; });
 
     max_distance_angle_left.insert(max_distance_angle_left.end(),
                                    max_distance_angle_right.begin(),
                                    max_distance_angle_right.end());
 
-    _segmentAngle[0] =
-        max_distance_angle_left[int(max_distance_angle_left.size() / 2)];
+    if (!max_distance_angle_left.empty()) {
+      _segmentAngle[0] =
+          max_distance_angle_left[int(max_distance_angle_left.size() / 2)];
+    } else {
+      _segmentAngle[0] = 0;
+    }
+
   } else {
     _segmentAngle[0] = _distance_vec_front[0].second;
   }
 
-  AINFO << "compute rear segmentation angle" << endl;
   //计算后方segmentation angle
   if (_distance_vec_rear[0].first == 1.0) {
     std::vector<int> max_distance_angle;
 
-    AINFO << "compute rear for" << endl;
     for (int i = 0; i < _distance_vec_rear.size(); ++i) {
       if (_distance_vec_rear[i].first == 1) {
         max_distance_angle.push_back(_distance_vec_rear[i].second);
       }
     }
     std::sort(max_distance_angle.begin(), max_distance_angle.end());
-    _segmentAngle[1] = max_distance_angle[int(max_distance_angle.size() / 2)];
+    if (!max_distance_angle.empty()) {
+      _segmentAngle[1] = max_distance_angle[int(max_distance_angle.size() / 2)];
+    } else {
+      _segmentAngle[1] = 0;
+    }
+
   } else {
     _segmentAngle[1] = _distance_vec_rear[0].second;
   }
@@ -195,13 +199,9 @@ void RoadSegmentation::computeSegmentAngle() {
 void RoadSegmentation::process(PointCloudType::Ptr incloud,
                                CloudPtrList outcloud) {
 
-  AINFO << "cd generatePolarGrid()" << endl;
   this->generatePolarGrid();
-  AINFO << "cd computeDistanceVec()" << endl;
   this->computeDistanceVec();
-  AINFO << "cd computeSegmentAngle()" << endl;
   this->computeSegmentAngle();
-  AINFO << "done computeSegmentAngle()" << endl;
 
   for (int i = 0; i < incloud->points.size(); ++i) {
     PointType point(incloud->points[i]);

@@ -3,4 +3,6 @@
   <node pkg="lidar_curb_detection" type="curb_detection_node" name="curb_detection" output="screen">
   </node>
 
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lidar_curb_detection)/launch/test.rviz"></node>
+
 </launch>

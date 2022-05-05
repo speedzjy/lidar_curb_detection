@@ -20,7 +20,7 @@
 #include <vector>
 #include <ctime>
 
-#include <opencv2/opencv.hpp>
+ #include <opencv2/highgui.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>

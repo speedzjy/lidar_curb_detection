@@ -35,6 +35,11 @@ public:
 private:
   ros::NodeHandle nh_;
   ros::Subscriber subPointCloud_;
+
+  ros::Publisher pubCompleteCloud_;
+  ros::Publisher pubGroundCloud_;
+  ros::Publisher pubCurbCloudLeft_;
+  ros::Publisher pubCurbCloudRight_;
 };
 
 }
