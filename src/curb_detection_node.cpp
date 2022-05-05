@@ -13,11 +13,13 @@ using namespace std;
 using namespace Eigen;
 using namespace CurbDectection;
 
+const string sub_cloud_raw = "/kitti/velo/pointcloud";
+
 int main(int argc,char** argv) {
 
   ros::init(argc, argv, "curb_detection");
 
-  LidarCurbDectection LCD;
+  LidarCurbDectection LCD(sub_cloud_raw);
 
   ros::spin();
 

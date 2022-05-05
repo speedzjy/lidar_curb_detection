@@ -8,13 +8,13 @@
 
 namespace CurbDectection {
 
-LidarCurbDectection::LidarCurbDectection()
+LidarCurbDectection::LidarCurbDectection(std::string cloud_topic_name)
     : nh_("~"), complete_points(new PointCloudType),
       boundary_points(CloudPtrList(2)) {
 
   update = false;
   subPointCloud_ = nh_.subscribe(
-      "/velodyne_points", 10, &LidarCurbDectection::pointCloudCallback, this);
+      cloud_topic_name, 10, &LidarCurbDectection::pointCloudCallback, this);
 
   pubCompleteCloud_ =
       nh_.advertise<sensor_msgs::PointCloud2>("/complete_cloud", 10);
@@ -93,30 +93,31 @@ void LidarCurbDectection::pointCloudCallback(
   *complete_points = *completeCloud;
 
   sensor_msgs::PointCloud2 tmp_rosCloud;
+  std::string in_cloud_frame_id = in_cloud_ptr->header.frame_id;
 
   //  完整点云
   pcl::toROSMsg(*complete_points, tmp_rosCloud);
-  tmp_rosCloud.header.frame_id = "velodyne";
+  tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubCompleteCloud_.publish(tmp_rosCloud);
 
   // 地面点
   pcl::toROSMsg(*ground_points, tmp_rosCloud);
-  tmp_rosCloud.header.frame_id = "velodyne";
+  tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubGroundCloud_.publish(tmp_rosCloud);
 
   // 非地面点
   pcl::toROSMsg(*ground_points_no, tmp_rosCloud);
-  tmp_rosCloud.header.frame_id = "velodyne";
+  tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubNoGroundCloud_.publish(tmp_rosCloud);
 
   // 左边缘点
   pcl::toROSMsg(*(boundary_points[0]), tmp_rosCloud);
-  tmp_rosCloud.header.frame_id = "velodyne";
+  tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubCurbCloudLeft_.publish(tmp_rosCloud);
-  
+
   // 右边缘点
   pcl::toROSMsg(*(boundary_points[1]), tmp_rosCloud);
-  tmp_rosCloud.header.frame_id = "velodyne";
+  tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubCurbCloudRight_.publish(tmp_rosCloud);
 }
 

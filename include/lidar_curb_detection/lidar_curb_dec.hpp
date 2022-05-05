@@ -20,7 +20,7 @@ namespace CurbDectection {
 class LidarCurbDectection {
 
 public:
-  LidarCurbDectection();
+  LidarCurbDectection(std::string cloud_topic_name);
   ~LidarCurbDectection();
 
   void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr & in_cloud_ptr);

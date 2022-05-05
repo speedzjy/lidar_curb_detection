@@ -26,7 +26,6 @@ include(cmake/boost.cmake)
 include(cmake/openmp.cmake)
 include(cmake/opencv.cmake)
 include(cmake/limbo.cmake)
-include(cmake/global_defination.cmake)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME})
