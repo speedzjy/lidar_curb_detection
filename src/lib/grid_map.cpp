@@ -1,8 +1,8 @@
 ﻿/*
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-03 15:21:41
+ * @LastEditors: speedzjy
+ * @LastEditTime: 2022-05-05 11:38:54
  */
 #include "lidar_curb_detection/grid_map.hpp"
 
