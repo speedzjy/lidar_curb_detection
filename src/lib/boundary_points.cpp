@@ -1,6 +1,7 @@
 ﻿#include "lidar_curb_detection/boundary_points.hpp"
 
 namespace CurbDectection {
+
 BoundaryPoints::BoundaryPoints(PointCloudType &incloud) {
   _cloud.reset(new PointCloudType);
   *_cloud = incloud;
@@ -11,6 +12,7 @@ BoundaryPoints::BoundaryPoints(PointCloudType &incloud) {
   _curveFitThres = boundaryPointsMsg_curveFitThres;
   _use_curve_fit = boundaryPointsMsg_useCurveRansac;
 }
+
 void BoundaryPoints::distanceFilterByLaserLeft(PointCloudType::Ptr incloud,
                                                PointCloudType::Ptr outcloud) {
   PointCloudType::Ptr completeCloudLeftMapped(new PointCloudType);
@@ -26,8 +28,8 @@ void BoundaryPoints::distanceFilterByLaserLeft(PointCloudType::Ptr incloud,
     size_t scanStartIdx = scanIDindicesLeft[i].first;
     size_t scanEndIdx = scanIDindicesLeft[i].second;
 
-    vector<pcl::PointXYZI> LeftFront;
-    vector<pcl::PointXYZI> LeftRear;
+    std::vector<pcl::PointXYZI> LeftFront;
+    std::vector<pcl::PointXYZI> LeftRear;
 
     for (size_t j = scanStartIdx; j <= scanEndIdx; ++j) {
       if (completeCloudLeftMapped->points[j].x >= 0) {
@@ -39,7 +41,7 @@ void BoundaryPoints::distanceFilterByLaserLeft(PointCloudType::Ptr incloud,
     //针对每个scan每个象限分别提取y值绝对值最小的点
     //左前方
     if (LeftFront.size() > 0) {
-      vector<pcl::PointXYZI> yNeg;
+      std::vector<pcl::PointXYZI> yNeg;
       //            vector<pcl::PointXYZI> yPos;
       for (size_t k = 0; k < LeftFront.size(); ++k) {
 
@@ -71,7 +73,7 @@ void BoundaryPoints::distanceFilterByLaserLeft(PointCloudType::Ptr incloud,
     }
     //左后方
     if (LeftRear.size() > 0) {
-      vector<pcl::PointXYZI> yNeg;
+      std::vector<pcl::PointXYZI> yNeg;
       for (size_t k = 0; k < LeftRear.size(); ++k) {
 
         if (LeftRear[k].y < 0) {
@@ -101,6 +103,7 @@ void BoundaryPoints::distanceFilterByLaserLeft(PointCloudType::Ptr incloud,
   }
   *outcloud = *Leftcloud;
 }
+
 void BoundaryPoints::distanceFilterByLaserRight(PointCloudType::Ptr incloud,
                                                 PointCloudType::Ptr outcloud) {
   PointCloudType::Ptr completeCloudLeftMapped(new PointCloudType);
@@ -116,8 +119,8 @@ void BoundaryPoints::distanceFilterByLaserRight(PointCloudType::Ptr incloud,
     size_t scanStartIdx = scanIDindicesLeft[i].first;
     size_t scanEndIdx = scanIDindicesLeft[i].second;
 
-    vector<pcl::PointXYZI> LeftFront;
-    vector<pcl::PointXYZI> LeftRear;
+    std::vector<pcl::PointXYZI> LeftFront;
+    std::vector<pcl::PointXYZI> LeftRear;
 
     for (size_t j = scanStartIdx; j <= scanEndIdx; ++j) {
       if (completeCloudLeftMapped->points[j].x >= 0) {
@@ -129,7 +132,7 @@ void BoundaryPoints::distanceFilterByLaserRight(PointCloudType::Ptr incloud,
     //针对每个scan每个象限分别提取y值绝对值最小的点
     //左前方
     if (LeftFront.size() > 0) {
-      vector<PointType> yPos;
+      std::vector<PointType> yPos;
       for (size_t k = 0; k < LeftFront.size(); ++k) {
 
         if (LeftFront[k].y > 0) {
@@ -160,7 +163,7 @@ void BoundaryPoints::distanceFilterByLaserRight(PointCloudType::Ptr incloud,
     }
     //左后方
     if (LeftRear.size() > 0) {
-      vector<PointType> yPos;
+      std::vector<PointType> yPos;
       for (size_t k = 0; k < LeftRear.size(); ++k) {
 
         if (LeftRear[k].y > 0) {
@@ -212,7 +215,7 @@ void BoundaryPoints::lineFitRansac(PointCloudType &incloud,
                                    pcl::PointIndices &indices) {
   pcl::ModelCoefficients _model;
   pcl::PointIndices _indices;
-  Vector3f axis(1, 0, 0);
+  Eigen::Vector3f axis(1, 0, 0);
   //    pcl::ModelCoefficients model;
   pcl::SACSegmentation<PointType> seg;
   seg.setOptimizeCoefficients(true);
@@ -229,7 +232,7 @@ void BoundaryPoints::lineFitRansac(PointCloudType &incloud,
 void BoundaryPoints::statisticalFilter_indces(PointCloudType incloud, int meanK,
                                               pcl::PointIndicesPtr pointindices,
                                               double stdThreshold) {
-  vector<int> indices;
+  std::vector<int> indices;
   pcl::StatisticalOutlierRemoval<PointType> sor;
   sor.setInputCloud(boost::make_shared<pcl::PointCloud<PointType>>(incloud));
   sor.setMeanK(meanK);
@@ -263,10 +266,10 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
                                   PointCloudType::Ptr outcloud) {
   srand(time(NULL)); // time(NULL)获取当前时间,返回一个长整形数值
   //-------------------------------------------------------------- make sample
-  //data
+  // data
 
-  vector<double> x(incloud->points.size());
-  vector<double> y(incloud->points.size());
+  std::vector<double> x(incloud->points.size());
+  std::vector<double> y(incloud->points.size());
   int nData = x.size();
 
   if (nData == 0 || nData == 1 || nData == 2)
@@ -295,7 +298,7 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
   }
 
   //-------------------------------------------------------------- RANSAC
-  //fitting
+  // fitting
   //    int n_data = 100 ;
   int N = 300;                  // iterations
   double T = residualThreshold; // residual threshold，拟合残差阈值
@@ -364,7 +367,7 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
 
   AINFO << "begin LS fitting" << endl;
   //------------------------------------------------------------------- optional
-  //LS fitting
+  // LS fitting
   cv::Mat residual = cv::abs(A * best_model - B);
   std::vector<int> vec_index; //存储模型内点索引
   for (int i = 0; i < nData; i++) {
@@ -376,7 +379,8 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
   }
   AINFO << "done LS fitting" << endl;
 
-  if (vec_index.size() == 0) return;
+  if (vec_index.size() == 0)
+    return;
 
   cv::Mat A2(vec_index.size(), 3, CV_64FC1); //存储所有内点
   cv::Mat B2(vec_index.size(), 1, CV_64FC1);
