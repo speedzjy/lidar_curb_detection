@@ -2,7 +2,10 @@
 
 > SOURCE https://github.com/wangguojun2018/LidarRoadBoundaryDetection
 
-This repository changed the code of the above article to ROS implementation, and fixed some bugs.
+This package is a **ROS** implementation for the code of the article above. Some bugs about boundary conditions have been fixed.
+
+This package can be used for **Road Curb Dectection** based on 3D LiDAR.
+
 
 ## Example
 ![Example](./readme_data/ex.png)
