@@ -1,8 +1,8 @@
 ﻿/*
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
- * @LastEditors: speedzjy
- * @LastEditTime: 2022-05-05 15:43:40
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-05-06 20:42:40
  */
 
 #pragma once
@@ -15,7 +15,7 @@
 namespace CurbDectection {
 class CloudMapper {
 public:
-  CloudMapper();
+  CloudMapper(const cloudMapperMsg &cmMsg);
   ~CloudMapper();
 
   const float &getLowerBound() { return _lowerBound; }

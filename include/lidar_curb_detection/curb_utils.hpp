@@ -12,23 +12,23 @@
 #include <utility>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <ctime>
 #include <deque>
 #include <iostream>
 #include <iterator>
 #include <string>
 #include <vector>
-#include <ctime>
-#include <chrono>
 
- #include <opencv2/highgui.hpp>
+#include <opencv2/highgui.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Eigen>
 
-#include <boost/make_shared.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/make_shared.hpp>
 
 #include <pcl/ModelCoefficients.h>
 #include <pcl/PointIndices.h>
@@ -60,9 +60,9 @@
 #include <limbo/mean/data.hpp>
 #include <limbo/model/gp.hpp>
 #include <limbo/model/gp/kernel_lf_opt.hpp>
+#include <limbo/serialize/text_archive.hpp>
 #include <limbo/tools.hpp>
 #include <limbo/tools/macros.hpp>
-#include <limbo/serialize/text_archive.hpp>
 
 #include "log.h"
 #include "math_utils.h"
@@ -78,6 +78,42 @@ typedef std::vector<IndexRange> scanIndices;
 
 typedef pcl::PointCloud<pcl::PointXY> PointCloudXY;
 
+typedef struct cloudmappermsg {
+  float lowerBound;
+  float upperBound;
+  int nScanRings;
+} cloudMapperMsg;
+
+typedef struct groundsegmentationmsg {
+  float segThres;
+} groundSegmentationMsg;
+
+typedef struct featurepointsmsg {
+  float heightMaxThres;
+  float heightMinThres;
+  int heightRegion;
+  float heightSigmaThre;
+
+  int curvatureRegion;
+  float curvatureThres;
+
+  float distanceHorizonThres;
+  float distanceVerticalThres;
+
+  float angularRes;
+
+  bool useVerticle;
+  bool useHorizon;
+} featurePointsMsg;
+
+typedef struct boundarypointsmsg {
+  float varThres;
+  float meanThres;
+  int gridNum;
+  float gridRes;
+  float curveFitThres;
+  bool useCurveRansac;
+} boundaryPointsMsg;
 
 static float cloudMapperMsg_lowerBound = -15;
 static float cloudMapperMsg_upperBound = 15;
@@ -93,7 +129,7 @@ static int featurePointsMsg_curvatureRegion = 5;
 static float featurePointsMsg_curvatureThres = 0.001;
 static float featurePointsMsg_distanceHorizonThres = 1;
 static float featurePointsMsg_distanceVerticalThres = 1;
-static float featurePointsMsg_angularRes = 0.2;  // 激光雷达角度分辨率
+static float featurePointsMsg_angularRes = 0.2; // 激光雷达角度分辨率
 static bool featurePointsMsg_useVerticle = false;
 static bool featurePointsMsg_useHorizon = true;
 
@@ -102,6 +138,36 @@ static float boundaryPointsMsg_meanThres = 1.5;
 static int boundaryPointsMsg_gridNum = 200;
 static float boundaryPointsMsg_gridRes = 0.5;
 static float boundaryPointsMsg_curveFitThres = 0.15;
-static bool boundaryPointsMsg_useCurveRansac= true;
+static bool boundaryPointsMsg_useCurveRansac = true;
+
+namespace CurbDectection {
+
+class ParamServer {
+public:
+  ros::NodeHandle nh_;
+
+  std::string subpointCloudTopic;
+  cloudMapperMsg cmMsg;
+  // groundSegmentationMsg gsMsg;
+  // featurePointsMsg fpMsg;
+  // boundaryPointsMsg bpMsg;
+
+  ParamServer() {
+
+    nh_.param<std::string>("lidar_curb_detection/pointCloudTopic",
+                           subpointCloudTopic, "velodyne_points");
+    nh_.param<float>("lidar_curb_detection/cloudMapperMsg/lowerBound",
+                     cmMsg.lowerBound, -15);
+    nh_.param<float>("lidar_curb_detection/cloudMapperMsg/upperBound",
+                     cmMsg.upperBound, 15);
+    nh_.param<int>("lidar_curb_detection/cloudMapperMsg/nScanRings",
+                   cmMsg.nScanRings, 32);
+    usleep(100);
+  }
+
+  ~ParamServer() {}
+};
+
+} // namespace CurbDectection
 
 #endif

@@ -1,5 +1,8 @@
 <launch>
 
+  <!-- Parameters -->
+  <rosparam file="$(find lidar_curb_detection)/config/params.yaml" command="load" />
+
   <node pkg="lidar_curb_detection" type="curb_detection_node" name="curb_detection" output="screen">
   </node>
 

@@ -2,13 +2,10 @@
 
 namespace CurbDectection {
 
-CloudMapper::CloudMapper() {
-  _lowerBound = cloudMapperMsg_lowerBound;
-  _upperBound = cloudMapperMsg_upperBound;
-  _nScanRings = cloudMapperMsg_nScanRings;
-  // _lowerBound = -15;
-  // _upperBound = 15;
-  // _nScanRings = 32;
+CloudMapper::CloudMapper(const cloudMapperMsg &cmMsg) {
+  _lowerBound = cmMsg.lowerBound;
+  _upperBound = cmMsg.upperBound;
+  _nScanRings = cmMsg.nScanRings;
   _factor = (_nScanRings - 1) / (_upperBound - _lowerBound);
 }
 

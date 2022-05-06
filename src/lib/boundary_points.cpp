@@ -2,7 +2,8 @@
 
 namespace CurbDectection {
 
-BoundaryPoints::BoundaryPoints(PointCloudType &incloud) {
+BoundaryPoints::BoundaryPoints(PointCloudType &incloud,
+                               const cloudMapperMsg &cmMsg) {
   _cloud.reset(new PointCloudType);
   *_cloud = incloud;
   _gridNum = boundaryPointsMsg_gridNum;
@@ -11,13 +12,15 @@ BoundaryPoints::BoundaryPoints(PointCloudType &incloud) {
   _meanThres = boundaryPointsMsg_meanThres;
   _curveFitThres = boundaryPointsMsg_curveFitThres;
   _use_curve_fit = boundaryPointsMsg_useCurveRansac;
+
+  _cmMsg = cmMsg;
 }
 
 void BoundaryPoints::distanceFilterByLaserLeft(PointCloudType::Ptr incloud,
                                                PointCloudType::Ptr outcloud) {
   PointCloudType::Ptr completeCloudLeftMapped(new PointCloudType);
   scanIndices scanIDindicesLeft;
-  CloudMapper mapperLeft;
+  CloudMapper mapperLeft(_cmMsg);
   mapperLeft.processByIntensity(incloud, completeCloudLeftMapped,
                                 scanIDindicesLeft);
   PointCloudType::Ptr Leftcloud(new PointCloudType);
@@ -108,7 +111,7 @@ void BoundaryPoints::distanceFilterByLaserRight(PointCloudType::Ptr incloud,
                                                 PointCloudType::Ptr outcloud) {
   PointCloudType::Ptr completeCloudLeftMapped(new PointCloudType);
   scanIndices scanIDindicesLeft;
-  CloudMapper mapperLeft;
+  CloudMapper mapperLeft(_cmMsg);
   mapperLeft.processByIntensity(incloud, completeCloudLeftMapped,
                                 scanIDindicesLeft);
   PointCloudType::Ptr Leftcloud(new PointCloudType);

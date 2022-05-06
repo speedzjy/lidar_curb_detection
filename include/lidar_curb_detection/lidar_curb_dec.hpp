@@ -17,15 +17,14 @@
 
 namespace CurbDectection {
 
-class LidarCurbDectection {
+class LidarCurbDectection : public ParamServer {
 
 public:
-  LidarCurbDectection(std::string cloud_topic_name);
+  LidarCurbDectection();
   ~LidarCurbDectection();
 
   void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr & in_cloud_ptr);
 
-  bool update;
   // 输入的每帧点云
   PointCloudType::Ptr complete_points;
   CloudQueue queue_complete_points;
@@ -33,7 +32,6 @@ public:
   CloudPtrList boundary_points;
 
 private:
-  ros::NodeHandle nh_;
   ros::Subscriber subPointCloud_;
 
   ros::Publisher pubCompleteCloud_;

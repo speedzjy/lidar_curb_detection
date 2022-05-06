@@ -1,8 +1,8 @@
 ﻿/*
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
- * @LastEditors: speedzjy
- * @LastEditTime: 2022-05-05 15:43:11
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-05-06 20:45:08
  */
 
 #pragma once
@@ -22,7 +22,7 @@ namespace CurbDectection {
 
 class BoundaryPoints {
 public:
-  BoundaryPoints(PointCloudType &incloud);
+  BoundaryPoints(PointCloudType &incloud, const cloudMapperMsg &cmMsg);
   void extractPointCloud(PointCloudType &incloud, pcl::PointIndicesPtr indices,
                          PointCloudType &outcloud);
   void lineFitRansac(PointCloudType &incloud, pcl::PointIndices &indices);
@@ -57,6 +57,8 @@ private:
   int _gridNum;
   float _curveFitThres;
   bool _use_curve_fit;
+
+  cloudMapperMsg _cmMsg;
 };
 } // namespace CurbDectection
 
