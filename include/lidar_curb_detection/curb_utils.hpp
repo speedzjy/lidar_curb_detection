@@ -115,10 +115,6 @@ typedef struct boundarypointsmsg {
   bool useCurveRansac;
 } boundaryPointsMsg;
 
-static float cloudMapperMsg_lowerBound = -15;
-static float cloudMapperMsg_upperBound = 15;
-static int cloudMapperMsg_nScanRings = 32;
-
 static float groundSegmentationMsg_segThres = 0.4;
 
 static float featurePointsMsg_heightMaxThres = 0.4;
