@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <chrono>
 
  #include <opencv2/highgui.hpp>
 
@@ -82,17 +83,17 @@ static float cloudMapperMsg_lowerBound = -15;
 static float cloudMapperMsg_upperBound = 15;
 static int cloudMapperMsg_nScanRings = 32;
 
-static float groundSegmentationMsg_segThres = 0.35;
+static float groundSegmentationMsg_segThres = 0.4;
 
-static float featurePointsMsg_heightMaxThres = 0.5;
+static float featurePointsMsg_heightMaxThres = 0.4;
 static float featurePointsMsg_heightMinThres = 0.02;
 static int featurePointsMsg_heightRegion = 5;
 static float featurePointsMsg_heightSigmaThre = 0.01;
 static int featurePointsMsg_curvatureRegion = 5;
 static float featurePointsMsg_curvatureThres = 0.001;
-static float featurePointsMsg_distanceHorizonThres = 2;
-static float featurePointsMsg_distanceVerticalThres = 0;
-static float featurePointsMsg_angularRes = 0.16;
+static float featurePointsMsg_distanceHorizonThres = 1;
+static float featurePointsMsg_distanceVerticalThres = 1;
+static float featurePointsMsg_angularRes = 0.2;  // 激光雷达角度分辨率
 static bool featurePointsMsg_useVerticle = false;
 static bool featurePointsMsg_useHorizon = true;
 

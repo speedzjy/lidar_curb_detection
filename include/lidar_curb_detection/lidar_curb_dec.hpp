@@ -39,6 +39,7 @@ private:
   ros::Publisher pubCompleteCloud_;
   ros::Publisher pubGroundCloud_;
   ros::Publisher pubNoGroundCloud_;
+  ros::Publisher pubFeatureCloud_;
   ros::Publisher pubCurbCloudLeft_;
   ros::Publisher pubCurbCloudRight_;
 };
