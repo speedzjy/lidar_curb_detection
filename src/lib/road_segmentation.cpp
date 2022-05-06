@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-06 16:47:41
+ * @LastEditTime: 2022-05-06 17:06:46
  */
 
 #include <lidar_curb_detection/road_segmentation.hpp>
@@ -29,11 +29,12 @@ void RoadSegmentation::generatePolarGrid() {
         std::atan2(_completeCloud->points[i].y, _completeCloud->points[i].x) *
         180 / M_PI;
     ori = ori < 0 ? ori + 360 : ori;
+    // 与论文一致，光束带分辨率设置为 1 度
     float resolution = 1;
     int segment_index = (int)(ori / resolution);
 
     if (segment_index < 360) {
-      // 二维投影
+      // 二维投影矩阵，根据方向角划分
       _grid_map_vec[segment_index].push_back(_completeCloud->points[i]);
     }
   }
@@ -42,6 +43,7 @@ void RoadSegmentation::generatePolarGrid() {
 void RoadSegmentation::computeDistanceVec() {
 #pragma omp parallel for schedule(runtime)
   for (int i = 0; i < _grid_map_vec.size(); ++i) {
+    // 根据点到激光雷达的距离排序
     std::sort(_grid_map_vec[i].begin(), _grid_map_vec[i].end(),
               [](PointType &left, PointType &right) {
                 float d1 = pow(left.x, 2) + pow(left.y, 2);
