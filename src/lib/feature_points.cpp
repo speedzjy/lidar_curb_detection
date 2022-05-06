@@ -1,8 +1,8 @@
 ﻿/*
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
- * @LastEditors: speedzjy
- * @LastEditTime: 2022-05-03 11:35:46
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-05-06 14:43:05
  */
 
 #include "lidar_curb_detection/feature_points.hpp"
@@ -119,7 +119,7 @@ void FeaturePoints::extractPoints(PointCloudType::Ptr incloud,
 }
 
 void FeaturePoints::extractFeatures(PointCloudType::Ptr feature_points) {
-
+  // 之前分片的每段scan
   size_t nScans = _scanindices.size();
 
   float angleRegionThres = _AngularRes * 4;
@@ -163,7 +163,7 @@ void FeaturePoints::extractFeatures(PointCloudType::Ptr feature_points) {
       }
     }
 
-    //提取平滑特征点
+    // 提取平滑特征点
     float pointWeight = -2 * _CurvatureRegion;
 
     for (size_t k = scanStartIdx + _CurvatureRegion;

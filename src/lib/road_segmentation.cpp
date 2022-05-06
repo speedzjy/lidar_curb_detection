@@ -1,8 +1,8 @@
 ﻿/*
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
- * @LastEditors: speedzjy
- * @LastEditTime: 2022-05-05 11:39:10
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-05-06 16:47:41
  */
 
 #include <lidar_curb_detection/road_segmentation.hpp>
@@ -22,6 +22,7 @@ RoadSegmentation::RoadSegmentation(PointCloudType::Ptr incloud)
 }
 
 void RoadSegmentation::generatePolarGrid() {
+  // 这里处理经过滤除杂点后的非地面点 obstacleCloudFiltered
   for (int i = 0; i < _completeCloud->points.size(); ++i) {
 
     float ori =
@@ -32,6 +33,7 @@ void RoadSegmentation::generatePolarGrid() {
     int segment_index = (int)(ori / resolution);
 
     if (segment_index < 360) {
+      // 二维投影
       _grid_map_vec[segment_index].push_back(_completeCloud->points[i]);
     }
   }
@@ -141,7 +143,7 @@ void RoadSegmentation::computeSegmentAngle() {
     std::vector<int> max_distance_angle_left;
     std::vector<int> max_distance_angle_right;
 
-    for (int i = 0; i < _distance_vec_front.size(); ++i) {
+    for (size_t i = 0; i < _distance_vec_front.size(); ++i) {
       if (_distance_vec_front[i].first == 1.0 &&
           _distance_vec_front[i].second < 90) {
         max_distance_angle_left.push_back(_distance_vec_front[i].second);
@@ -177,7 +179,7 @@ void RoadSegmentation::computeSegmentAngle() {
   if (_distance_vec_rear[0].first == 1.0) {
     std::vector<int> max_distance_angle;
 
-    for (int i = 0; i < _distance_vec_rear.size(); ++i) {
+    for (size_t i = 0; i < _distance_vec_rear.size(); ++i) {
       if (_distance_vec_rear[i].first == 1) {
         max_distance_angle.push_back(_distance_vec_rear[i].second);
       }

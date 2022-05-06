@@ -22,6 +22,8 @@ LidarCurbDectection::LidarCurbDectection(std::string cloud_topic_name)
       nh_.advertise<sensor_msgs::PointCloud2>("/ground_cloud", 10);
   pubNoGroundCloud_ =
       nh_.advertise<sensor_msgs::PointCloud2>("/no_ground_cloud", 10);
+  pubFeatureCloud_ =
+      nh_.advertise<sensor_msgs::PointCloud2>("/feature_cloud", 10);
   pubCurbCloudLeft_ =
       nh_.advertise<sensor_msgs::PointCloud2>("/curb_cloud_left", 10);
   pubCurbCloudRight_ =
@@ -36,6 +38,8 @@ LidarCurbDectection::~LidarCurbDectection() {}
 
 void LidarCurbDectection::pointCloudCallback(
     const sensor_msgs::PointCloud2ConstPtr &in_cloud_ptr) {
+  
+  std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
   PointCloudType::Ptr tmp_points(new PointCloudType);
   pcl::fromROSMsg(*in_cloud_ptr, *tmp_points);
@@ -54,19 +58,24 @@ void LidarCurbDectection::pointCloudCallback(
     queue_complete_points.pop_front();
   }
 
-  //计算点云laserID,并将ID存为intensity
+  //计算点云laserID, 并将ID存为intensity
   CloudMapper mapper_laserID;
   PointCloudType::Ptr completeCloudMapper(new PointCloudType);
   mapper_laserID.processByOri(completeCloud, completeCloudMapper);
-  AINFO << "raw points number: " << completeCloudMapper->points.size()
-        << endl;
+  AINFO << "raw points number: " << completeCloudMapper->points.size() << endl;
 
-  //地面提取
+  // 地面提取
+  // 论文中选取范围: Z x Y x X , [−3, 1] x [−40, 40] x [−70, 70]
+  // 代码实际选取: Y x X , [−30, 30] x [−40, 40]
+  // 使用 pcl 库进行平面特征点提取
   PointCloudType::Ptr ground_points(new PointCloudType);
   PointCloudType::Ptr ground_points_no(new PointCloudType); //非地面点
 
   GroundSegmentation ground(completeCloudMapper);
   ground.groundfilter(ground_points, ground_points_no);
+  AINFO << "ground_points number: " << ground_points->points.size() << endl;
+  AINFO << "no_ground_points number: " << ground_points_no->points.size()
+        << endl;
 
   //根据之前计算的Intensity对地面点云进行mapper
   CloudMapper mapper2;
@@ -74,8 +83,6 @@ void LidarCurbDectection::pointCloudCallback(
   PointCloudType::Ptr ground_points_mapper(new PointCloudType);
   mapper2.processByIntensity(ground_points, ground_points_mapper,
                              scanIDindices);
-  AINFO << "ground points mapper number: " << ground_points_mapper->points.size()
-        << endl;
 
   //特征点提取
   pcl::PointCloud<pcl::PointXYZI>::Ptr featurePoints(
@@ -89,6 +96,11 @@ void LidarCurbDectection::pointCloudCallback(
   refinePoints.process(ground_points_no, boundary_points);
 
   *complete_points = *completeCloud;
+
+  // 计时
+  std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+  std::chrono::duration<double> time_used = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+  AINFO << "compute this frame time cost = " << time_used.count() << " seconds. " << endl;
 
   sensor_msgs::PointCloud2 tmp_rosCloud;
   std::string in_cloud_frame_id = in_cloud_ptr->header.frame_id;
@@ -108,6 +120,11 @@ void LidarCurbDectection::pointCloudCallback(
   tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubNoGroundCloud_.publish(tmp_rosCloud);
 
+  // 特征点
+  pcl::toROSMsg(*featurePoints, tmp_rosCloud);
+  tmp_rosCloud.header.frame_id = in_cloud_frame_id;
+  pubFeatureCloud_.publish(tmp_rosCloud);
+
   // 左边缘点
   pcl::toROSMsg(*(boundary_points[0]), tmp_rosCloud);
   tmp_rosCloud.header.frame_id = in_cloud_frame_id;
@@ -117,6 +134,7 @@ void LidarCurbDectection::pointCloudCallback(
   pcl::toROSMsg(*(boundary_points[1]), tmp_rosCloud);
   tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubCurbCloudRight_.publish(tmp_rosCloud);
+  
 }
 
 } // namespace CurbDectection

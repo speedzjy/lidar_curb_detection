@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-05 16:50:47
+ * @LastEditTime: 2022-05-06 10:40:19
  */
 
 #include "lidar_curb_detection/ground_segment.hpp"
@@ -18,7 +18,8 @@ GroundSegmentation::GroundSegmentation(PointCloudType::Ptr incloud) {
     _cloudptrlist[i].reset(new PointCloudType);
   }
 
-  //分段进行平面分割
+  // 分段进行平面分割
+  // 选取范围: Z x Y x X , [−3, 1] x [−40, 40] x [−70, 70]
   for (int i = 0; i < incloud->points.size(); ++i) {
     if (incloud->points[i].x <= 15 && incloud->points[i].x >= 0 &&
         abs(incloud->points[i].y) < 30) {

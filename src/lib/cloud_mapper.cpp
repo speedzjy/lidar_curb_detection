@@ -81,6 +81,7 @@ void CloudMapper::processByIntensity(PointCloudType::Ptr incloud,
     laserCloudScans[scanID].push_back(incloud->points[i]);
   }
   // laserCloudOut=laserCloudScans;
+  // 按 lidar 线数分段
   cloudSize = 0;
   for (int i = 0; i < getNumberOfScanRings(); i++) {
     if (laserCloudScans[i].size() > 0) {
@@ -92,6 +93,7 @@ void CloudMapper::processByIntensity(PointCloudType::Ptr incloud,
     }
   }
 }
+
 void CloudMapper::processByOri(PointCloudType::Ptr incloud,
                                PointCloudType::Ptr outcloud) {
   int scanID = 0;
