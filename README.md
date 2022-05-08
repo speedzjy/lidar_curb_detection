@@ -6,9 +6,12 @@ This package is a **ROS** implementation for the code of the article above. Some
 
 This package can be used for **Road Curb Dectection** based on 3D LiDAR.
 
+Lidar Curb Detection can detect the direction of the curb along the roads, which can have a certain effect on dividing the passable area. For example, like this:
 
-## Example
-![Example](./readme_data/ex.png)
+![Example](./readme_data/ex2.png)
+
+## Rviz Example
+![Example](./readme_data/ex1.png)
 
 ## Dependencies
 
