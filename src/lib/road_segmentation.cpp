@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-08 09:44:06
+ * @LastEditTime: 2022-05-08 10:59:41
  */
 
 #include <lidar_curb_detection/road_segmentation.hpp>
@@ -70,6 +70,7 @@ void RoadSegmentation::computeDistanceVec() {
       // point.x = 33 * cos(i * M_PI / 180);
       // point.y = 33 * sin(i * M_PI / 180);
       // point.z = 0;
+      // 峰值方向
       _distance_vec[i] = std::pair<float, int>(1.0, i);
       // _nearest_points[i] = point;
     }
@@ -79,7 +80,8 @@ void RoadSegmentation::computeDistanceVec() {
   //    distance_vec_temp[1]=_distance_vec[1];
   //    distance_vec_temp[359]=_distance_vec[359];
   //    distance_vec_temp[358]=_distance_vec[358];
-  //对距离vector进行中值滤波
+
+  // 对距离vector进行中值滤波
   _distance_vec_front.push_back(_distance_vec[0]);
   _distance_vec_front.push_back(_distance_vec[1]);
   _distance_vec_front.push_back(_distance_vec[2]);
@@ -203,10 +205,17 @@ void RoadSegmentation::computeSegmentAngle() {
 void RoadSegmentation::process(PointCloudType::Ptr incloud,
                                CloudPtrList outcloud) {
 
+  // 以下三个函数用到的点云都是 obstacleCloudFiltered
+  // 即过滤杂点后的非地面点
+  // 生成距离向量矩阵
   this->generatePolarGrid();
+  // 中值滤波
   this->computeDistanceVec();
+  // 寻找道路分割线
   this->computeSegmentAngle();
 
+  // 分割左右路沿候选点，粗分割
+  // 在道路中心线左边即为左路沿候选点，右侧同理
   for (size_t i = 0; i < incloud->points.size(); ++i) {
     PointType point(incloud->points[i]);
     //        point.intensity=i;

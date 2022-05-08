@@ -447,6 +447,7 @@ void BoundaryPoints::process(PointCloudType::Ptr obstacleCloud,
     }
   }
 
+  // 这一步作粗粒度路沿检测，提取路沿候选点
   RoadSegmentation mycluster(obstacleCloudFiltered);
   mycluster.process(_cloud, clusterPtrLR);
   AINFO << "left candidate points is" << clusterPtrLR[0]->points.size() << endl;
