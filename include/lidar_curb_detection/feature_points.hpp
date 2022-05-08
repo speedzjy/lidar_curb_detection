@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-03 11:29:59
+ * @LastEditTime: 2022-05-08 09:27:01
  */
 
 #ifndef CURB_POINT_H
@@ -15,7 +15,9 @@ namespace CurbDectection {
 class FeaturePoints {
 public:
   // -sr 2 -hr 5 -st 1 -nrmin 0.25 -nt 0.25
-  FeaturePoints(PointCloudType::Ptr incloud, std::vector<IndexRange> scanIndices);
+  FeaturePoints(PointCloudType::Ptr incloud,
+                std::vector<IndexRange> scanIndices,
+                const featurePointsMsg &fpMsg);
   float RegionMaxZ(int j);
   float RegionMinZ(int j);
   float slope_angle(int i);

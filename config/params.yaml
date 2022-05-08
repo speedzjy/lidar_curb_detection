@@ -8,31 +8,31 @@ lidar_curb_detection:
     upperBound: 15
     nScanRings: 32
 
-  # groundSegmentationMsg:
-  #   segThres: 0.4
+  groundSegmentationMsg:
+    segThres: 0.4
 
-  # featurePointsMsg:
-  #   heightMaxThres: 0.4
-  #   heightMinThres: 0.02
-  #   heightRegion: 5
-  #   heightSigmaThre: 0.01
+  featurePointsMsg:
+    heightMaxThres: 0.4
+    heightMinThres: 0.02
+    heightRegion: 5
+    heightSigmaThre: 0.01
 
-  #   curvatureRegion: 5
-  #   curvatureThres: 0.001
+    curvatureRegion: 5
+    curvatureThres: 0.001
 
-  #   distanceHorizonThres: 1.0
-  #   distanceVerticalThres: 1.0
+    distanceHorizonThres: 1.0
+    distanceVerticalThres: 1.0
 
-  #   angularRes: 0.16
+    angularRes: 0.16  #激光雷达角度分辨率
 
-  #   useVerticle: false
-  #   useHorizon: true
+    useVerticle: false
+    useHorizon: true
   
-  # boundaryPointsMsg:
-  #   varThres: 2.5
-  #   meanThres: 1.5
-  #   gridNum: 200
-  #   gridRes: 0.5
-  #   curveFitThres: 0.15
-  #   useCurveRansac: true
+  boundaryPointsMsg:
+    varThres: 2.5
+    meanThres: 1.5
+    gridNum: 200
+    gridRes: 0.5
+    curveFitThres: 0.15
+    useCurveRansac: true
   

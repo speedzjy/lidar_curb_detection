@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-06 20:45:08
+ * @LastEditTime: 2022-05-08 09:38:48
  */
 
 #pragma once
@@ -22,7 +22,7 @@ namespace CurbDectection {
 
 class BoundaryPoints {
 public:
-  BoundaryPoints(PointCloudType &incloud, const cloudMapperMsg &cmMsg);
+  BoundaryPoints(PointCloudType &incloud, const cloudMapperMsg &cmMsg, const boundaryPointsMsg &bpMsg);
   void extractPointCloud(PointCloudType &incloud, pcl::PointIndicesPtr indices,
                          PointCloudType &outcloud);
   void lineFitRansac(PointCloudType &incloud, pcl::PointIndices &indices);

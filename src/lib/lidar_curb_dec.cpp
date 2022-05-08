@@ -68,7 +68,7 @@ void LidarCurbDectection::pointCloudCallback(
   PointCloudType::Ptr ground_points(new PointCloudType);
   PointCloudType::Ptr ground_points_no(new PointCloudType); //非地面点
 
-  GroundSegmentation ground(completeCloudMapper);
+  GroundSegmentation ground(completeCloudMapper, gsMsg);
   ground.groundfilter(ground_points, ground_points_no);
   AINFO << "ground_points number: " << ground_points->points.size() << endl;
   AINFO << "no_ground_points number: " << ground_points_no->points.size()
@@ -84,12 +84,12 @@ void LidarCurbDectection::pointCloudCallback(
   //特征点提取
   pcl::PointCloud<pcl::PointXYZI>::Ptr featurePoints(
       new pcl::PointCloud<pcl::PointXYZI>);
-  FeaturePoints curbExtract(ground_points_mapper, scanIDindices);
+  FeaturePoints curbExtract(ground_points_mapper, scanIDindices, fpMsg);
   curbExtract.extractFeatures(featurePoints);
   AINFO << "feature points number: " << featurePoints->points.size() << endl;
 
   //高斯过程提取
-  BoundaryPoints refinePoints(*featurePoints, cmMsg);
+  BoundaryPoints refinePoints(*featurePoints, cmMsg, bpMsg);
   refinePoints.process(ground_points_no, boundary_points);
 
   *complete_points = *completeCloud;

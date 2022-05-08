@@ -2,19 +2,20 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-06 10:40:19
+ * @LastEditTime: 2022-05-08 09:21:02
  */
 
 #include "lidar_curb_detection/ground_segment.hpp"
 
 namespace CurbDectection {
 
-GroundSegmentation::GroundSegmentation(PointCloudType::Ptr incloud) {
-  _threshold = groundSegmentationMsg_segThres;
+GroundSegmentation::GroundSegmentation(PointCloudType::Ptr incloud,
+                                       const groundSegmentationMsg &gsMsg) {
+  _threshold = gsMsg.segThres;
   _cloudptrlist.resize(6);
 
 #pragma omp parallel for schedule(runtime)
-  for (int i = 0; i < _cloudptrlist.size(); ++i) {
+  for (size_t i = 0; i < _cloudptrlist.size(); ++i) {
     _cloudptrlist[i].reset(new PointCloudType);
   }
 
@@ -75,7 +76,7 @@ void GroundSegmentation::planeSeg(PointCloudType::Ptr cloud,
 void GroundSegmentation::groundfilter(PointCloudType::Ptr groundpoints,
                                       PointCloudType::Ptr non_groundpoints) {
 
-  for (int i = 0; i < _cloudptrlist.size() - 2; ++i) {
+  for (size_t i = 0; i < _cloudptrlist.size() - 2; ++i) {
 
     PointCloudType::Ptr ground_i(new PointCloudType);
     PointCloudType::Ptr ground_no_i(new PointCloudType);

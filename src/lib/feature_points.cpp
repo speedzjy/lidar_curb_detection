@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-06 14:43:05
+ * @LastEditTime: 2022-05-08 09:27:27
  */
 
 #include "lidar_curb_detection/feature_points.hpp"
@@ -10,28 +10,29 @@
 namespace CurbDectection {
 
 FeaturePoints::FeaturePoints(PointCloudType::Ptr incloud,
-                             std::vector<IndexRange> scanIndices)
+                             std::vector<IndexRange> scanIndices,
+                             const featurePointsMsg &fpMsg)
 
 {
   _cloud.reset(new PointCloudType);
   _cloud = incloud;
   _scanindices = scanIndices;
 
-  _HeightRegion = featurePointsMsg_heightRegion;
-  _HeightSigmaThres = featurePointsMsg_heightSigmaThre;
-  _HeightMaxThres = featurePointsMsg_heightMaxThres;
-  _HeightMinThres = featurePointsMsg_heightMinThres;
+  _HeightRegion = fpMsg.heightRegion;
+  _HeightSigmaThres = fpMsg.heightSigmaThre;
+  _HeightMaxThres = fpMsg.heightMaxThres;
+  _HeightMinThres = fpMsg.heightMinThres;
 
-  _CurvatureThres = featurePointsMsg_curvatureThres;
-  _CurvatureRegion = featurePointsMsg_curvatureRegion;
+  _CurvatureThres = fpMsg.curvatureThres;
+  _CurvatureRegion = fpMsg.curvatureRegion;
 
-  _DistanceHorizonThres = featurePointsMsg_distanceHorizonThres;
-  _DistanceVerticalThres = featurePointsMsg_distanceVerticalThres;
+  _DistanceHorizonThres = fpMsg.distanceHorizonThres;
+  _DistanceVerticalThres = fpMsg.distanceVerticalThres;
 
-  _AngularRes = featurePointsMsg_angularRes;
+  _AngularRes = fpMsg.angularRes;
 
-  _use_verticle = featurePointsMsg_useVerticle;
-  _use_horizon = featurePointsMsg_useHorizon;
+  _use_verticle = fpMsg.useVerticle;
+  _use_horizon = fpMsg.useHorizon;
 }
 
 float FeaturePoints::computeHorizonDiff(int index, int region) {

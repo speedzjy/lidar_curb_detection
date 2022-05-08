@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-03 11:09:39
+ * @LastEditTime: 2022-05-08 09:18:13
  */
 
 #pragma once
@@ -16,7 +16,7 @@ namespace CurbDectection {
   
 class GroundSegmentation {
 public:
-  GroundSegmentation(PointCloudType::Ptr incloud);
+  GroundSegmentation(PointCloudType::Ptr incloud, const groundSegmentationMsg &gsMsg);
   void extractGround(PointCloudType::Ptr outCloud,
                      PointCloudType::Ptr inputCloud,
                      pcl::PointIndices::Ptr Indices, bool setNeg = false);

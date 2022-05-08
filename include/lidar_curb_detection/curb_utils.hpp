@@ -115,27 +115,6 @@ typedef struct boundarypointsmsg {
   bool useCurveRansac;
 } boundaryPointsMsg;
 
-static float groundSegmentationMsg_segThres = 0.4;
-
-static float featurePointsMsg_heightMaxThres = 0.4;
-static float featurePointsMsg_heightMinThres = 0.02;
-static int featurePointsMsg_heightRegion = 5;
-static float featurePointsMsg_heightSigmaThre = 0.01;
-static int featurePointsMsg_curvatureRegion = 5;
-static float featurePointsMsg_curvatureThres = 0.001;
-static float featurePointsMsg_distanceHorizonThres = 1;
-static float featurePointsMsg_distanceVerticalThres = 1;
-static float featurePointsMsg_angularRes = 0.2; // 激光雷达角度分辨率
-static bool featurePointsMsg_useVerticle = false;
-static bool featurePointsMsg_useHorizon = true;
-
-static float boundaryPointsMsg_varThres = 2.5;
-static float boundaryPointsMsg_meanThres = 1.5;
-static int boundaryPointsMsg_gridNum = 200;
-static float boundaryPointsMsg_gridRes = 0.5;
-static float boundaryPointsMsg_curveFitThres = 0.15;
-static bool boundaryPointsMsg_useCurveRansac = true;
-
 namespace CurbDectection {
 
 class ParamServer {
@@ -144,20 +123,67 @@ public:
 
   std::string subpointCloudTopic;
   cloudMapperMsg cmMsg;
-  // groundSegmentationMsg gsMsg;
-  // featurePointsMsg fpMsg;
-  // boundaryPointsMsg bpMsg;
+  groundSegmentationMsg gsMsg;
+  featurePointsMsg fpMsg;
+  boundaryPointsMsg bpMsg;
 
   ParamServer() {
 
     nh_.param<std::string>("lidar_curb_detection/pointCloudTopic",
                            subpointCloudTopic, "velodyne_points");
+
+    // cloudMapperMsg
     nh_.param<float>("lidar_curb_detection/cloudMapperMsg/lowerBound",
                      cmMsg.lowerBound, -15);
     nh_.param<float>("lidar_curb_detection/cloudMapperMsg/upperBound",
                      cmMsg.upperBound, 15);
     nh_.param<int>("lidar_curb_detection/cloudMapperMsg/nScanRings",
                    cmMsg.nScanRings, 32);
+
+    // groundSegmentationMsg
+    nh_.param<float>("lidar_curb_detection/groundSegmentationMsg/segThres",
+                     gsMsg.segThres, 0.5);
+
+    // featurePointsMsg
+    nh_.param<float>("lidar_curb_detection/featurePointsMsg/heightMaxThres",
+                     fpMsg.heightMaxThres, 0.5);
+    nh_.param<float>("lidar_curb_detection/featurePointsMsg/heightMinThres",
+                     fpMsg.heightMinThres, 0.02);
+    nh_.param<int>("lidar_curb_detection/featurePointsMsg/heightRegion",
+                   fpMsg.heightRegion, 5);
+    nh_.param<float>("lidar_curb_detection/featurePointsMsg/heightSigmaThre",
+                     fpMsg.heightSigmaThre, 0.01);
+    nh_.param<int>("lidar_curb_detection/featurePointsMsg/curvatureRegion",
+                   fpMsg.curvatureRegion, 5);
+    nh_.param<float>("lidar_curb_detection/featurePointsMsg/curvatureThres",
+                     fpMsg.curvatureThres, 0.001);
+    nh_.param<float>(
+        "lidar_curb_detection/featurePointsMsg/distanceHorizonThres",
+        fpMsg.distanceHorizonThres, 1);
+    nh_.param<float>(
+        "lidar_curb_detection/featurePointsMsg/distanceVerticalThres",
+        fpMsg.distanceVerticalThres, 1);
+    nh_.param<float>("lidar_curb_detection/featurePointsMsg/angularRes",
+                     fpMsg.angularRes, 0.16);
+    nh_.param<bool>("lidar_curb_detection/featurePointsMsg/useVerticle",
+                    fpMsg.useVerticle, false);
+    nh_.param<bool>("lidar_curb_detection/featurePointsMsg/useHorizon",
+                    fpMsg.useHorizon, true);
+
+    // boundaryPointsMsg
+    nh_.param<float>("lidar_curb_detection/boundaryPointsMsg/varThres",
+                     bpMsg.varThres, 2.5);
+    nh_.param<float>("lidar_curb_detection/boundaryPointsMsg/meanThres",
+                     bpMsg.meanThres, 1.5);
+    nh_.param<int>("lidar_curb_detection/boundaryPointsMsg/gridNum",
+                   bpMsg.gridNum, 200);
+    nh_.param<float>("lidar_curb_detection/boundaryPointsMsg/gridRes",
+                     bpMsg.gridRes, 0.5);
+    nh_.param<float>("lidar_curb_detection/boundaryPointsMsg/curveFitThres",
+                     bpMsg.curveFitThres, 0.15);
+    nh_.param<bool>("lidar_curb_detection/boundaryPointsMsg/useCurveRansac",
+                    bpMsg.useCurveRansac, true);
+
     usleep(100);
   }
 

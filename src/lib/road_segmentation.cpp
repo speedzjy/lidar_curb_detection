@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-06 17:06:46
+ * @LastEditTime: 2022-05-08 09:44:06
  */
 
 #include <lidar_curb_detection/road_segmentation.hpp>
@@ -23,7 +23,7 @@ RoadSegmentation::RoadSegmentation(PointCloudType::Ptr incloud)
 
 void RoadSegmentation::generatePolarGrid() {
   // 这里处理经过滤除杂点后的非地面点 obstacleCloudFiltered
-  for (int i = 0; i < _completeCloud->points.size(); ++i) {
+  for (size_t i = 0; i < _completeCloud->points.size(); ++i) {
 
     float ori =
         std::atan2(_completeCloud->points[i].y, _completeCloud->points[i].x) *
@@ -42,7 +42,7 @@ void RoadSegmentation::generatePolarGrid() {
 
 void RoadSegmentation::computeDistanceVec() {
 #pragma omp parallel for schedule(runtime)
-  for (int i = 0; i < _grid_map_vec.size(); ++i) {
+  for (size_t i = 0; i < _grid_map_vec.size(); ++i) {
     // 根据点到激光雷达的距离排序
     std::sort(_grid_map_vec[i].begin(), _grid_map_vec[i].end(),
               [](PointType &left, PointType &right) {
@@ -86,7 +86,7 @@ void RoadSegmentation::computeDistanceVec() {
   _distance_vec_front.push_back(_distance_vec[359]);
   _distance_vec_front.push_back(_distance_vec[358]);
   _distance_vec_front.push_back(_distance_vec[357]);
-  for (int i = 3; i < _distance_vec.size() - 3; ++i) {
+  for (size_t i = 3; i < _distance_vec.size() - 3; ++i) {
     std::vector<float> temp;
     if (i >= 0 && i < 3) {
       //            vector<double> temp;
@@ -207,7 +207,7 @@ void RoadSegmentation::process(PointCloudType::Ptr incloud,
   this->computeDistanceVec();
   this->computeSegmentAngle();
 
-  for (int i = 0; i < incloud->points.size(); ++i) {
+  for (size_t i = 0; i < incloud->points.size(); ++i) {
     PointType point(incloud->points[i]);
     //        point.intensity=i;
     if (point.x > 0) {

@@ -3,15 +3,15 @@
 namespace CurbDectection {
 
 BoundaryPoints::BoundaryPoints(PointCloudType &incloud,
-                               const cloudMapperMsg &cmMsg) {
+                               const cloudMapperMsg &cmMsg, const boundaryPointsMsg &bpMsg) {
   _cloud.reset(new PointCloudType);
   *_cloud = incloud;
-  _gridNum = boundaryPointsMsg_gridNum;
-  _gridRes = boundaryPointsMsg_gridRes;
-  _varThres = boundaryPointsMsg_varThres;
-  _meanThres = boundaryPointsMsg_meanThres;
-  _curveFitThres = boundaryPointsMsg_curveFitThres;
-  _use_curve_fit = boundaryPointsMsg_useCurveRansac;
+  _gridNum = bpMsg.gridNum;
+  _gridRes = bpMsg.gridRes;
+  _varThres = bpMsg.varThres;
+  _meanThres = bpMsg.meanThres;
+  _curveFitThres = bpMsg.curveFitThres;
+  _use_curve_fit = bpMsg.useCurveRansac;
 
   _cmMsg = cmMsg;
 }
