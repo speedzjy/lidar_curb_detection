@@ -43,6 +43,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <visualization_msgs/Marker.h>
 
 #include <pcl/filters/conditional_removal.h>
 #include <pcl/filters/extract_indices.h>
@@ -77,6 +78,8 @@ typedef std::pair<size_t, size_t> IndexRange;
 typedef std::vector<IndexRange> scanIndices;
 
 typedef pcl::PointCloud<pcl::PointXY> PointCloudXY;
+
+typedef std::vector<visualization_msgs::Marker> MarkerList;
 
 typedef struct cloudmappermsg {
   float lowerBound;

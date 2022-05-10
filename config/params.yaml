@@ -1,7 +1,7 @@
 lidar_curb_detection:
 
   # Topics
-  pointCloudTopic: "velodyne_points"   # kitti/velo/pointcloud
+  pointCloudTopic: "velodyne_points"   # kitti/velo/pointcloud | velodyne_points
 
   cloudMapperMsg:
     lowerBound: -15

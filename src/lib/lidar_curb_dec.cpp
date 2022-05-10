@@ -27,6 +27,9 @@ LidarCurbDectection::LidarCurbDectection()
   pubCurbCloudRight_ =
       nh_.advertise<sensor_msgs::PointCloud2>("/curb_cloud_right", 10);
 
+  pubMarker_ =
+      nh_.advertise<visualization_msgs::Marker>("/visual_marker", 10);
+
   for (size_t i = 0; i < boundary_points.size(); ++i) {
     boundary_points[i] = boost::make_shared<PointCloudType>();
   }
@@ -90,7 +93,9 @@ void LidarCurbDectection::pointCloudCallback(
 
   //高斯过程提取
   BoundaryPoints refinePoints(*featurePoints, cmMsg, bpMsg);
-  refinePoints.process(ground_points_no, boundary_points);
+  // 道路中心线
+  MarkerList line_list(2);
+  refinePoints.process(ground_points_no, boundary_points, line_list);
 
   *complete_points = *completeCloud;
 
@@ -133,6 +138,12 @@ void LidarCurbDectection::pointCloudCallback(
   pcl::toROSMsg(*(boundary_points[1]), tmp_rosCloud);
   tmp_rosCloud.header.frame_id = in_cloud_frame_id;
   pubCurbCloudRight_.publish(tmp_rosCloud);
+
+  // 道路中心线
+  for (size_t i = 0; i < line_list.size(); ++i) {
+    line_list[i].header.frame_id = in_cloud_frame_id;
+    pubMarker_.publish(line_list[i]);
+  }
 }
 
 } // namespace CurbDectection

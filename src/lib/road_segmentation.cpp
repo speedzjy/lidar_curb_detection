@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-08 10:59:41
+ * @LastEditTime: 2022-05-10 17:18:41
  */
 
 #include <lidar_curb_detection/road_segmentation.hpp>
@@ -19,6 +19,8 @@ RoadSegmentation::RoadSegmentation(PointCloudType::Ptr incloud)
   _distance_vec_filtered.resize(360);
   _distance_vec_.resize(360);
   _nearest_points.resize(360);
+
+  road_central_line_.resize(2);
 }
 
 void RoadSegmentation::generatePolarGrid() {
@@ -200,12 +202,41 @@ void RoadSegmentation::computeSegmentAngle() {
   }
   AINFO << "The front segmentation angle is " << _segmentAngle[0] << endl;
   AINFO << "The back segmentation angle is  " << _segmentAngle[1] << endl;
+
+  for (size_t i = 0; i < road_central_line_.size(); ++i) {
+    road_central_line_[i].type = visualization_msgs::Marker::LINE_LIST;
+    road_central_line_[i].action = visualization_msgs::Marker::ADD;
+
+    road_central_line_[i].id = i;
+
+    road_central_line_[i].scale.x = 0.1;
+    // Line list is green
+    if (i == 0)
+      road_central_line_[i].color.g = 1.0;
+    else
+      road_central_line_[i].color.r = 1.0;
+
+    road_central_line_[i].color.a = 1.0;
+
+    road_central_line_[i].pose.orientation =
+        tf::createQuaternionMsgFromRollPitchYaw(
+            0, 0, _segmentAngle[i] / 180.0f * M_PI);
+
+    geometry_msgs::Point p;
+    p.x = p.y = p.z = 0;
+    // The line list needs two points for each line
+    road_central_line_[i].points.push_back(p);
+    p.x += 5.0;
+    road_central_line_[i].points.push_back(p);
+  }
+
 }
 
 void RoadSegmentation::process(PointCloudType::Ptr incloud,
-                               CloudPtrList outcloud) {
+                               CloudPtrList outcloud,
+                               MarkerList &road_central_line) {
 
-  // 以下三个函数用到的点云都是 obstacleCloudFiltered
+  // 以下三个函数用到的点云都是 obstacleCloudFiltered，非地面点
   // 即过滤杂点后的非地面点
   // 生成距离向量矩阵
   this->generatePolarGrid();
@@ -214,7 +245,10 @@ void RoadSegmentation::process(PointCloudType::Ptr incloud,
   // 寻找道路分割线
   this->computeSegmentAngle();
 
-  // 分割左右路沿候选点，粗分割
+  // 道路中心线
+  road_central_line = road_central_line_;
+
+  // 分割左右路沿候选点，粗分割，用的的点云是特征点 featurePoints
   // 在道路中心线左边即为左路沿候选点，右侧同理
   for (size_t i = 0; i < incloud->points.size(); ++i) {
     PointType point(incloud->points[i]);

@@ -40,6 +40,8 @@ private:
   ros::Publisher pubFeatureCloud_;
   ros::Publisher pubCurbCloudLeft_;
   ros::Publisher pubCurbCloudRight_;
+
+  ros::Publisher pubMarker_;
 };
 
 }

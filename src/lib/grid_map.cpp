@@ -1,8 +1,8 @@
 ﻿/*
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
- * @LastEditors: speedzjy
- * @LastEditTime: 2022-05-05 11:38:54
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-05-10 15:01:59
  */
 #include "lidar_curb_detection/grid_map.hpp"
 
@@ -41,7 +41,7 @@ void GridMap::distanceFilterByCartesianGrid(PointCloudType::Ptr outcloud,
           if (gridLeft[i][min_y_Left].y > gridLeft[i][k].y) {
             min_y_Left = k;
           }
-        } else {
+        } else {  // 在右侧的 y 坐标是负的,所以是小于
           if (gridLeft[i][min_y_Left].y < gridLeft[i][k].y) {
             min_y_Left = k;
           }

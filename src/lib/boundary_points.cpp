@@ -3,7 +3,8 @@
 namespace CurbDectection {
 
 BoundaryPoints::BoundaryPoints(PointCloudType &incloud,
-                               const cloudMapperMsg &cmMsg, const boundaryPointsMsg &bpMsg) {
+                               const cloudMapperMsg &cmMsg,
+                               const boundaryPointsMsg &bpMsg) {
   _cloud.reset(new PointCloudType);
   *_cloud = incloud;
   _gridNum = bpMsg.gridNum;
@@ -273,12 +274,12 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
 
   std::vector<double> x(incloud->points.size());
   std::vector<double> y(incloud->points.size());
-  int nData = x.size();
+  int nData = incloud->points.size();
 
   if (nData == 0 || nData == 1 || nData == 2)
     return;
 
-  for (int i = 0; i < x.size(); i++) {
+  for (size_t i = 0; i < x.size(); i++) {
     x[i] = incloud->points[i].x;
     y[i] = incloud->points[i].y;
   }
@@ -286,17 +287,10 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
   cv::Mat A(nData, 3, CV_64FC1);
   cv::Mat B(nData, 1, CV_64FC1);
 
-  for (int i = 0; i < nData; i++) {
+  for (size_t i = 0; i < nData; i++) {
     A.at<double>(i, 0) = x[i] * x[i];
-  }
-  for (int i = 0; i < nData; i++) {
     A.at<double>(i, 1) = x[i];
-  }
-  for (int i = 0; i < nData; i++) {
     A.at<double>(i, 2) = 1.0;
-  }
-
-  for (int i = 0; i < nData; i++) {
     B.at<double>(i, 0) = y[i];
   }
 
@@ -309,9 +303,6 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
   int n_sample = 3;
   int max_cnt = 0;
   cv::Mat best_model(3, 1, CV_64FC1);
-
-  // AINFO << "nData: " << nData << endl;
-  // AINFO << "cd for 1" << endl;
 
   for (int i = 0; i < N; i++) {
     // random sampling - 3 point
@@ -338,7 +329,6 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
       AA.at<double>(j, 0) = x[k[j]] * x[k[j]];
       AA.at<double>(j, 1) = x[k[j]];
       AA.at<double>(j, 2) = 1.0;
-
       BB.at<double>(j, 0) = y[k[j]];
     }
 
@@ -392,14 +382,12 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
     A2.at<double>(i, 0) = x[vec_index[i]] * x[vec_index[i]];
     A2.at<double>(i, 1) = x[vec_index[i]];
     A2.at<double>(i, 2) = 1.0;
-
     B2.at<double>(i, 0) = y[vec_index[i]];
   }
 
   cv::Mat A2_pinv(3, vec_index.size(), CV_64FC1);
 
   invert(A2, A2_pinv, cv::DECOMP_SVD);
-  AINFO << A2_pinv << endl;
 
   cv::Mat X = A2_pinv * B2; //利用所有内点再次进行拟合得到优化后的模型系数
 
@@ -419,7 +407,8 @@ void BoundaryPoints::ransac_curve(PointCloudType::Ptr incloud,
 }
 
 void BoundaryPoints::process(PointCloudType::Ptr obstacleCloud,
-                             CloudPtrList clusterCloud) {
+                             CloudPtrList clusterCloud,
+                             MarkerList &road_central_line) {
 
   PointCloudType::Ptr cloud2D(new PointCloudType);
   PointCloudType::Ptr cloudFilted(new PointCloudType);
@@ -448,8 +437,9 @@ void BoundaryPoints::process(PointCloudType::Ptr obstacleCloud,
   }
 
   // 这一步作粗粒度路沿检测，提取路沿候选点
+  // 根据道路中心线，进行粗分割
   RoadSegmentation mycluster(obstacleCloudFiltered);
-  mycluster.process(_cloud, clusterPtrLR);
+  mycluster.process(_cloud, clusterPtrLR, road_central_line);
   AINFO << "left candidate points is" << clusterPtrLR[0]->points.size() << endl;
   AINFO << "right candidate points is " << clusterPtrLR[1]->points.size()
         << endl;

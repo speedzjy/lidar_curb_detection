@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   nav_msgs
   geometry_msgs
+  visualization_msgs
   tf
   eigen_conversions
 )
@@ -39,6 +40,7 @@ catkin_package(
   sensor_msgs
   nav_msgs
   geometry_msgs
+  visualization_msgs
   tf
   eigen_conversions
 )

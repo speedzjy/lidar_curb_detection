@@ -12,15 +12,16 @@ GaussianProcess::GaussianProcess(PointCloudType::Ptr candidatePoints,
   _candidateIndex.resize(_candidatePoints.size());
   _leftIndex.resize(_leftInitialPoints.size());
 
-#pragma omp parallel for schedule(runtime)
+  #pragma omp parallel for schedule(runtime)
   for (int i = 0; i < _candidatePoints.size(); ++i) {
     _candidateIndex[i] = (int)_candidatePoints[i].intensity;
   }
 
-#pragma omp parallel for schedule(runtime)
+  #pragma omp parallel for schedule(runtime)
   for (int i = 0; i < _leftInitialPoints.size(); ++i) {
     _leftIndex[i] = (int)_leftInitialPoints[i].intensity;
   }
+
   _remainIndex = vectors_difference(_candidateIndex, _leftIndex);
 }
 
@@ -36,7 +37,7 @@ void GaussianProcess::initialTrainData() {
   _xLeft.resize(_leftIndex.size());
   _yLeft.resize(_leftIndex.size());
 
-#pragma omp parallel for schedule(runtime)
+  #pragma omp parallel for schedule(runtime)
   for (int i = 0; i < _leftIndex.size(); ++i) {
     _xLeft[i] = tools::make_vector(_candidatePoints[_leftIndex[i]].x);
     _yLeft[i] = tools::make_vector(_candidatePoints[_leftIndex[i]].y);
@@ -54,12 +55,13 @@ void GaussianProcess::initialTrainData() {
   _remainX.resize(_remainIndex.size());
   _remainY.resize(_remainIndex.size());
 
-#pragma omp parallel for schedule(runtime)
+  #pragma omp parallel for schedule(runtime)
   for (int i = 0; i < _remainIndex.size(); ++i) {
     _remainX[i] = tools::make_vector(_candidatePoints[_remainIndex[i]].x);
     _remainY[i] = tools::make_vector(_candidatePoints[_remainIndex[i]].y);
   }
 }
+
 void GaussianProcess::process(PointCloudType::Ptr clusterCloud) {
   this->initialTrainData();
 
@@ -90,7 +92,8 @@ void GaussianProcess::process(PointCloudType::Ptr clusterCloud) {
     _remainIndex = vectors_difference(_candidateIndex, _leftIndex);
     _remainX.resize(_remainIndex.size());
     _remainY.resize(_remainIndex.size());
-#pragma omp parallel for schedule(runtime)
+    
+    #pragma omp parallel for schedule(runtime)
     for (int i = 0; i < _remainIndex.size(); ++i) {
       _remainX[i] = tools::make_vector(_candidatePoints[_remainIndex[i]].x);
       _remainY[i] = tools::make_vector(_candidatePoints[_remainIndex[i]].y);

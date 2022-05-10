@@ -2,7 +2,7 @@
  * @Authors: Guojun Wang
  * @Date: 1970-01-01 08:00:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-08 09:38:48
+ * @LastEditTime: 2022-05-10 17:04:03
  */
 
 #pragma once
@@ -22,7 +22,8 @@ namespace CurbDectection {
 
 class BoundaryPoints {
 public:
-  BoundaryPoints(PointCloudType &incloud, const cloudMapperMsg &cmMsg, const boundaryPointsMsg &bpMsg);
+  BoundaryPoints(PointCloudType &incloud, const cloudMapperMsg &cmMsg,
+                 const boundaryPointsMsg &bpMsg);
   void extractPointCloud(PointCloudType &incloud, pcl::PointIndicesPtr indices,
                          PointCloudType &outcloud);
   void lineFitRansac(PointCloudType &incloud, pcl::PointIndices &indices);
@@ -41,7 +42,8 @@ public:
                                  PointCloudType::Ptr outcloud);
   void distanceFilterByLaserRight(PointCloudType::Ptr incloud,
                                   PointCloudType::Ptr outcloud);
-  void process(PointCloudType::Ptr obstacleCloud, CloudPtrList clusterCloud);
+  void process(PointCloudType::Ptr obstacleCloud, CloudPtrList clusterCloud,
+               MarkerList &road_central_line);
 
 private:
   PointCloudType::Ptr _cloud;
