@@ -11,15 +11,20 @@ Lidar Curb Detection can detect the direction of the curb along the roads, which
 ![Example](./readme_data/ex2.png)
 
 ## Rviz Example
+
+In the picture here, the green and red pillars are the left and right divisions of the front and rear roads, respectively. Yellow dots are rough roadside points, red and blue are the roadside points that are carefully selected from the yellow dots, that is, the final result.
 ![Example](./readme_data/ex1.png)
 
 ## Dependencies
 
-- glog
+- [glog](https://github.com/google/glog)
 - pcl 1.8
 - Opencv 3.4
-- boost
-- [limbo](http://www.resibots.eu/limbo/tutorials/compilation.html)
+- boost : `sudo apt install libboost-all-dev`
+- [limbo](http://www.resibots.eu/limbo/tutorials/compilation.html)(**It has been built in the third -party library folder, no need to install it again**)
+
+## Params
+You can change your params in [params.yaml](https://github.com/speedzjy/lidar_curb_detection/blob/main/config/params.yaml).
 
 ## Run
 ```bash
